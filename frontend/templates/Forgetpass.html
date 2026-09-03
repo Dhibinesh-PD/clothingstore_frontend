@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initital-scale=1.0">
+        <title>ClothingStore</title>
+        <link rel="icon" type="image/png" href="{{ url_for('static', filename='logo.png') }}">
+
+        <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+    </head>
+    <body>
+        <div class="input-group">
+            <p>Recover Your Account</p>
+            <label for="email">Mail ID or Phone number</label>
+            <input 
+             type="mail"
+            id="mail"
+            placeholder="Enter Here"
+            required>
+            <button 
+                type="button"
+                id="togglepassword">
+                <a href="verification.html">Send Code</a>
+                
+            
+            </button>
+            <script src="{{ url_for('static', filename='javascript.js') }}"></script>
+    </body>
+</html>
