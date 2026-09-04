@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Clothing Store - Login</title>
+    <link rel="icon" type="image/png" href="{{ url_for('static', filename='logo.png') }}">
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+
+    <div class="login-container">
+
+        <div class="login-box">
+
+            <h1>Clothing Store</h1>
+            <p class="welcome">Welcome back to Store!</p>
+
+            <form id="loginForm">
+
+                <div class="input-group">
+                    <label for="email">Mail Id</label>
+                    <input
+                        type="email"
+                        id="email"
+                        placeholder="Enter your email"
+                        required
+                    >
+                </div>
+
+                <div class="input-group">
+                    <label for="password">Password</label>
+
+                    <div class="password-box">
+                        <input
+                            type="password"
+                            id="password"
+                            placeholder="Enter your password"
+                            required
+                        >
+
+                        <button
+                            type="button"
+                            id="togglePassword">Show
+                        </button>
+                    </div>
+                </div>
+
+                <div class="login-options">
+
+                    <label>
+                        <input type="checkbox" id="remember">
+                        Remember me
+                    </label>
+
+                    <a href="Forgetpass.html">Forgot Password?</a>
+
+                </div>
+
+                <button type="submit" class="login-btn">
+                    login
+                </button>
+                <a href="/admin/login" class="adminlogin">Admin Login</a>
+
+                <p id="message"></p>
+
+            </form>
+
+            <p class="register-text">
+                Don't have an account?
+                <a href="create.html">Create Account</a>
+            </p>
+
+        </div>
+
+    </div>
+
+    <script src="{{ url_for('static', filename='javascript.js') }}"></script>
+
+</body>
+</html>

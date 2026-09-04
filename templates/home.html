@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clothing Store - Home</title>
+    <link rel="icon" type="image/png" href="{{ url_for('static', filename='logo.png') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='home.css') }}">
+</head>
+<body data-user-id="{{ current_user_id }}">
+    <nav class="navbar">
+        <div class="logo">CLOTH STORE</div>
+        <div class="nav-links">
+            <a href="#" onclick="showAllProducts()">Home</a>
+            <a href="#" onclick="showGender('Men')">Men</a>
+            <a href="#" onclick="showGender('Women')">Women</a>
+            <a href="#" onclick="showCategory('T-Shirt')">T-Shirts</a>
+            <a href="#" onclick="showCategory('Shirt')">Shirts</a>
+            <a href="#" onclick="showCategory('Jeans')">Jeans</a>
+            <a href="#" onclick="showCategory('Dress')">Dresses</a>
+            <a href="#" onclick="showCart()">
+                Cart
+                <span id="cartCount">0</span>
+            </a>
+            <a href="/my-orders">My Orders</a>
+            <a href="/logout" class="logout-link">Logout</a>
+        </div>
+    </nav>
+
+    <section class="hero">
+        <div class="hero-content">
+            <p>NEW COLLECTION</p>
+            <h1>Find Your<br>Perfect Style</h1>
+            <button onclick="showAllProducts()">Shop Now</button>
+        </div>
+    </section>
+
+    <section class="products-section">
+        <div class="section-header">
+            <h2 id="productTitle">All Products</h2>
+            <p id="productDescription">Explore our latest collection</p>
+        </div>
+        <div id="productContainer" class="product-grid"></div>
+    </section>
+
+    <section id="cartSection" class="cart-section" style="display: none;">
+        <div class="section-header">
+            <h2>Your Shopping Cart</h2>
+            <p>Your selected products</p>
+        </div>
+        <div id="cartContainer"></div>
+        <div id="cartTotal" class="cart-total"></div>
+    </section>
+
+    <footer>
+        <h3>CLOTH STORE</h3>
+        <p>Your style, your choice.</p>
+        <p>&copy; 2026 Cloth Store</p>
+    </footer>
+
+    <script src="{{ url_for('static', filename='homejavascript.js') }}"></script>
+</body>
+</html>

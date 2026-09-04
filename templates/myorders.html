@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Orders - Clothing Store</title>
+    <link rel="icon" type="image/png" href="{{ url_for('static', filename='logo.png') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='home.css') }}">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="logo">CLOTH STORE</div>
+        <div class="nav-links">
+            <a href="/home">Home</a>
+            <a href="/home">Shop</a>
+            <a href="/payment">Checkout</a>
+            <a href="/my-orders" class="active-link">My Orders</a>
+            <a href="/logout" class="logout-link">Logout</a>
+        </div>
+    </nav>
+
+    <section class="orders-section">
+        <div class="section-header">
+            <h2>My Orders</h2>
+            <p>Your order history</p>
+        </div>
+
+        <div id="successMessage" class="success-banner" style="display: none;"></div>
+
+        <div id="ordersContainer"></div>
+
+        <div id="loadingMsg" class="empty-cart">Loading your orders...</div>
+    </section>
+
+    <script>
+    const ordersContainer = document.getElementById("ordersContainer");
+    const loadingMsg = document.getElementById("loadingMsg");
+    const successMessage = document.getElementById("successMessage");
+
+    // Show success message from payment redirect
+    const params = new URLSearchParams(window.location.search);
+    if (params.get("success") === "1") {
+        successMessage.textContent = "Payment completed! Your order has been placed successfully.";
+        successMessage.style.display = "block";
+    }
+
+    function formatDate(dateString) {
+        if (!dateString) return "";
+        const d = new Date(dateString);
+        return d.toLocaleString();
+    }
+
+    function statusClass(status) {
+        return status ? status.toLowerCase() : "pending";
+    }
+
+    function loadOrders() {
+        fetch("/api/my-orders")
+            .then(function (resp) { return resp.json(); })
+            .then(function (data) {
+                loadingMsg.style.display = "none";
+
+                if (!data.success) {
+                    ordersContainer.innerHTML = '<div class="empty-cart">' + data.message + '</div>';
+                    return;
+                }
+
+                if (data.orders.length === 0) {
+                    ordersContainer.innerHTML = '<div class="empty-cart">You have no orders yet.</div>';
+                    return;
+                }
+
+                let html = "";
+                data.orders.forEach(function (order) {
+                    const lineTotal = (order.price * order.quantity).toFixed(2);
+                    const canCancel = order.order_status === "Pending";
+                    html += `
+                        <div class="order-card">
+                            <div class="order-card-header">
+                                <div>
+                                    <strong>Order #${order.id}</strong>
+                                    <span class="order-date">${formatDate(order.order_date)}</span>
+                                </div>
+                                <span class="order-status status-${statusClass(order.order_status)}">${order.order_status}</span>
+                            </div>
+                            <div class="order-detail">
+                                <h4>${order.product_name}</h4>
+                                <p>${order.gender ? order.gender : ""} ${order.category ? "/ " + order.category : ""}</p>
+                                <p>₹${order.price} x ${order.quantity} = <strong>₹${lineTotal}</strong></p>
+                            </div>
+                            <div class="order-address">
+                                <p><strong>Deliver to:</strong> ${order.customer_name}</p>
+                                <p>${order.address}, ${order.pincode} - ${order.phone}</p>
+                            </div>
+                            <div class="order-card-footer">
+                                <span class="payment-label">Payment: ${order.payment_status}</span>
+                                ${canCancel
+                                    ? '<button class="cancel-btn" onclick="cancelOrder(' + order.id + ')">Cancel Order</button>'
+                                    : '<span class="cancel-disabled">Cannot cancel (' + order.order_status + ')</span>'}
+                            </div>
+                        </div>
+                    `;
+                });
+                ordersContainer.innerHTML = html;
+            })
+            .catch(function (err) {
+                console.error(err);
+                loadingMsg.style.display = "none";
+                ordersContainer.innerHTML = '<div class="empty-cart">Unable to load orders.</div>';
+            });
+    }
+
+    function cancelOrder(orderId) {
+        if (!confirm("Are you sure you want to cancel this order?")) return;
+
+        fetch("/orders/cancel/" + orderId, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" }
+        })
+            .then(function (resp) { return resp.json(); })
+            .then(function (data) {
+                if (data.success) {
+                    successMessage.textContent = data.message;
+                    successMessage.style.display = "block";
+                    loadOrders();
+                } else {
+                    alert(data.message);
+                }
+            })
+            .catch(function (err) {
+                console.error(err);
+                alert("Unable to cancel order.");
+            });
+    }
+
+    loadOrders();
+    </script>
+</body>
+</html>
