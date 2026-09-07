@@ -3,58 +3,245 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Payment - Clothing Store</title>
+    <title>Secure Checkout &bull; CLOTH STORE</title>
     <link rel="icon" type="image/png" href="{{ url_for('static', filename='logo.png') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='home.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
-<body data-user-id="{{ current_user_id }}">
-    <div class="payment-container">
-        <div class="payment-header">
-            <h1>ClothingStore</h1>
-            <a href="/logout" class="logout-link">Logout</a>
+<body class="checkout-page-body" data-user-id="{{ current_user_id }}">
+
+    <!-- NAVBAR -->
+    <nav class="navbar">
+        <a class="nav-brand-group" href="/home">
+            <div class="brand-icon-box">CS</div>
+            <div class="brand-text-box">
+                <span class="brand-title">CLOTH STORE</span>
+                <span class="brand-tagline">SECURE PAYMENT</span>
+            </div>
+        </a>
+
+        <div class="nav-links">
+            <a class="nav-item-link" href="/home">&larr; Return to Shopping</a>
+            <a class="nav-item-link" href="/my-orders">My Orders</a>
+            <a href="/logout" class="logout-nav-btn">Logout</a>
         </div>
-        <h2>Delivery Details</h2>
+    </nav>
 
-        <form id="paymentForm">
-            <label for="custName">Full Name</label>
-            <input
-                type="text"
-                id="custName"
-                name="custName"
-                placeholder="Enter your full name"
-                required>
+    <!-- CHECKOUT CONTAINER -->
+    <main class="checkout-wrapper">
+        <div class="checkout-stepper-bar">
+            <div class="step-item active">
+                <div class="step-num">1</div>
+                <div class="step-name">Shipping Details</div>
+            </div>
+            <div class="step-divider"></div>
+            <div class="step-item active">
+                <div class="step-num">2</div>
+                <div class="step-name">Payment Option</div>
+            </div>
+            <div class="step-divider"></div>
+            <div class="step-item active">
+                <div class="step-num">3</div>
+                <div class="step-name">Order Confirmation</div>
+            </div>
+        </div>
 
-            <label for="phone">Phone Number</label>
-            <input
-                type="tel"
-                id="phone"
-                name="phone"
-                placeholder="Enter your phone number"
-                required>
+        <div class="checkout-layout-grid">
+            <!-- LEFT COLUMN: DELIVERY ADDRESS & PAYMENT SELECTION -->
+            <div class="checkout-main-col">
+                <form id="paymentForm">
+                    <!-- SECTION 1: DELIVERY ADDRESS -->
+                    <div class="checkout-card">
+                        <div class="checkout-card-header">
+                            <div class="header-icon">📍</div>
+                            <div>
+                                <h3>Delivery Destination</h3>
+                                <p>Where should we deliver your order?</p>
+                            </div>
+                        </div>
 
-            <label for="pincode">Pincode</label>
-            <input
-                type="text"
-                id="pincode"
-                name="pincode"
-                placeholder="Enter your pincode"
-                required>
+                        <div class="form-grid-2">
+                            <div class="input-field-group">
+                                <label for="custName">Recipient Full Name *</label>
+                                <input type="text" id="custName" name="custName" placeholder="e.g. David Sterling" required>
+                            </div>
+                            <div class="input-field-group">
+                                <label for="phone">Contact Phone Number *</label>
+                                <input type="tel" id="phone" name="phone" placeholder="e.g. +91 98765 43210" required>
+                            </div>
+                        </div>
 
-            <label for="address">Full Address</label>
-            <textarea
-                id="address"
-                name="address"
-                placeholder="Enter your complete delivery address"
-                required></textarea>
+                        <div class="form-grid-2">
+                            <div class="input-field-group">
+                                <label for="pincode">Postal / Pincode *</label>
+                                <input type="text" id="pincode" name="pincode" placeholder="e.g. 600001" required>
+                            </div>
+                            <div class="input-field-group">
+                                <label for="landmark">Landmark / Area (Optional)</label>
+                                <input type="text" id="landmark" placeholder="Near Central Metro">
+                            </div>
+                        </div>
 
-            <h2>Order Summary</h2>
-            <div id="orderDetails"></div>
+                        <div class="input-field-group">
+                            <label for="address">Street Address, Apartment, Suite *</label>
+                            <textarea id="address" name="address" rows="3" placeholder="Apartment / Suite, Building, Street address" required></textarea>
+                        </div>
+                    </div>
 
-            <button type="submit" class="payment-button">Complete Payment</button>
-        </form>
+                    <!-- SECTION 2: PAYMENT METHOD TABS -->
+                    <div class="checkout-card" style="margin-top: 24px;">
+                        <div class="checkout-card-header">
+                            <div class="header-icon">💳</div>
+                            <div>
+                                <h3>Payment Method</h3>
+                                <p>Select your preferred 256-bit encrypted checkout method</p>
+                            </div>
+                        </div>
 
-        <p id="paymentMessage"></p>
-    </div>
+                        <div class="payment-tabs-row">
+                            <button type="button" class="pay-tab active" onclick="switchPayTab('upi', this)">
+                                <span>📱</span> UPI / QR
+                            </button>
+                            <button type="button" class="pay-tab" onclick="switchPayTab('card', this)">
+                                <span>💳</span> Cards
+                            </button>
+                            <button type="button" class="pay-tab" onclick="switchPayTab('netbanking', this)">
+                                <span>🏦</span> Net Banking
+                            </button>
+                            <button type="button" class="pay-tab" onclick="switchPayTab('cod', this)">
+                                <span>💵</span> Cash on Delivery
+                            </button>
+                        </div>
+
+                        <!-- TAB CONTENT: UPI -->
+                        <div id="tabContentUpi" class="pay-tab-panel">
+                            <div class="upi-box">
+                                <div class="mock-qr-card">
+                                    <div class="qr-placeholder">
+                                        <svg width="120" height="120" viewBox="0 0 24 24" fill="none" stroke="#0f172a" stroke-width="1.8">
+                                            <rect x="3" y="3" width="7" height="7"></rect>
+                                            <rect x="14" y="3" width="7" height="7"></rect>
+                                            <rect x="14" y="14" width="7" height="7"></rect>
+                                            <rect x="3" y="14" width="7" height="7"></rect>
+                                            <path d="M7 7h.01M17 7h.01M7 17h.01M17 17h.01"></path>
+                                        </svg>
+                                    </div>
+                                    <div class="qr-text">Scan with any UPI App (GPay, PhonePe, Paytm)</div>
+                                </div>
+                                <div class="or-separator">&mdash; OR ENTER UPI VPA &mdash;</div>
+                                <div class="input-field-group">
+                                    <label>UPI ID / VPA</label>
+                                    <input type="text" id="upiIdInput" placeholder="username@oksbi / mobile@upi" value="customer@okaxis">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- TAB CONTENT: CARD -->
+                        <div id="tabContentCard" class="pay-tab-panel" style="display: none;">
+                            <div class="card-inputs-wrapper">
+                                <div class="input-field-group">
+                                    <label>Card Number</label>
+                                    <input type="text" id="cardNumberInput" placeholder="4532 &bull;&bull;&bull;&bull; &bull;&bull;&bull;&bull; 8920" maxlength="19" value="4532 8921 4452 8920">
+                                </div>
+                                <div class="form-grid-2">
+                                    <div class="input-field-group">
+                                        <label>Expiry Date</label>
+                                        <input type="text" id="cardExpiryInput" placeholder="MM/YY" maxlength="5" value="08/29">
+                                    </div>
+                                    <div class="input-field-group">
+                                        <label>CVV / CVC</label>
+                                        <input type="password" id="cardCvvInput" placeholder="123" maxlength="4" value="888">
+                                    </div>
+                                </div>
+                                <div class="input-field-group">
+                                    <label>Cardholder Name</label>
+                                    <input type="text" id="cardHolderInput" placeholder="Name as printed on card" value="David Sterling">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- TAB CONTENT: NETBANKING -->
+                        <div id="tabContentNetbanking" class="pay-tab-panel" style="display: none;">
+                            <label style="font-size: 13px; font-weight: 700; margin-bottom: 12px; display: block; color: #334155;">Popular Indian Banks</label>
+                            <div class="banks-grid">
+                                <label class="bank-radio-card active"><input type="radio" name="bank" checked> HDFC Bank</label>
+                                <label class="bank-radio-card"><input type="radio" name="bank"> ICICI Bank</label>
+                                <label class="bank-radio-card"><input type="radio" name="bank"> State Bank of India</label>
+                                <label class="bank-radio-card"><input type="radio" name="bank"> Axis Bank</label>
+                            </div>
+                        </div>
+
+                        <!-- TAB CONTENT: COD -->
+                        <div id="tabContentCod" class="pay-tab-panel" style="display: none;">
+                            <div class="cod-notice-card">
+                                <div style="font-size: 24px;">📦</div>
+                                <div>
+                                    <h4>Pay on Delivery Selected</h4>
+                                    <p>Please keep the exact amount ready in cash or UPI upon delivery.</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="checkout-submit-row">
+                            <button type="submit" id="completePaymentBtn" class="pay-now-btn">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+                                <span>Authorize & Place Order</span>
+                            </button>
+                            <p id="paymentMessage" class="checkout-feedback-msg"></p>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+            <!-- RIGHT COLUMN: ORDER SUMMARY BREAKDOWN -->
+            <div class="checkout-summary-col">
+                <div class="checkout-card sticky-card">
+                    <div class="checkout-card-header">
+                        <div class="header-icon">🛍️</div>
+                        <div>
+                            <h3>Order Summary</h3>
+                            <p id="orderItemsCount">0 products in bag</p>
+                        </div>
+                    </div>
+
+                    <!-- ORDER ITEMS PREVIEW -->
+                    <div id="orderDetails" class="checkout-items-list">
+                        <!-- Dynamic items injected by JS -->
+                    </div>
+
+                    <div class="bill-breakdown">
+                        <div class="bill-row">
+                            <span>Bag Subtotal</span>
+                            <span id="billSubtotal">₹0.00</span>
+                        </div>
+                        <div class="bill-row" id="billDiscountRow" style="display: none; color: #10b981;">
+                            <span>Promotional Discount</span>
+                            <span id="billDiscount">-₹0.00</span>
+                        </div>
+                        <div class="bill-row">
+                            <span>Express Shipping</span>
+                            <span id="billShipping" style="color: #10b981; font-weight: 700;">FREE</span>
+                        </div>
+                        <div class="bill-row" style="color: #64748b; font-size: 12.5px;">
+                            <span>Taxes & GST (Included)</span>
+                            <span>₹0.00</span>
+                        </div>
+                        <div class="bill-row grand-total">
+                            <span>Amount Payable</span>
+                            <span id="billGrandTotal">₹0.00</span>
+                        </div>
+                    </div>
+
+                    <div class="trust-guarantee-box">
+                        <div class="trust-line">🔒 256-Bit SSL Bank-Grade Encryption</div>
+                        <div class="trust-line">🛡️ 100% Purchase Protection & Guarantee</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <div id="toastContainer"></div>
 
     <script src="{{ url_for('static', filename='javascript.js') }}"></script>
 </body>

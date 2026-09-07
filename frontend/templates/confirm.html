@@ -1,37 +1,80 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initital-scale=1.0">
-        <title>ClothingStore</title>
-        <link rel="icon" type="image/png" href="{{ url_for('static', filename='logo.png') }}">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Set New Password &bull; CLOTH STORE</title>
+    <link rel="icon" type="image/png" href="{{ url_for('static', filename='logo.png') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
 
-        <link rel="stylesheet" href="style.css">
-    </head>
-    <body>
-        <div class="input-group">
-            <p>Recover Your Account</p>
-            <label for="email">Enter New Password</label>
-            <input 
-             type="mail"
-            id="mail"
-            placeholder="Enter Here"
-            required>
-                <div class="input-group">
-                    <label for="email">Confirm New Password</label>
-                    <input 
-                    type="mail"
-                    id="mail"
-                    placeholder="Enter Here"
-                    required>
-                <button 
-                type="button"
-                id="togglepassword">Change Password
+    <div class="auth-split-layout">
+        <!-- LEFT EDITORIAL HERO -->
+        <div class="auth-hero-pane">
+            <div class="auth-brand-badge">
+                <div class="auth-brand-logo">CS</div>
+                <div class="auth-brand-title">CLOTH STORE</div>
+            </div>
+
+            <div class="auth-quote-box">
+                <blockquote>
+                    &ldquo;You're almost there. Choose a strong, memorable password.&rdquo;
+                </blockquote>
+                <div class="auth-quote-author">&mdash; Cloth Store Security</div>
+            </div>
+
+            <div class="auth-hero-footer">
+                Step 3 of 3 &bull; Finalize New Password
+            </div>
+        </div>
+
+        <!-- RIGHT RESET FORM -->
+        <div class="auth-form-pane">
+            <div class="auth-card-inner">
+                <div class="auth-header">
+                    <h2>Create New Password</h2>
+                    <p>Enter your new password to regain access to your customer account</p>
                 </div>
-            
-                
-            
-                 </button>
 
-    </body>
+                <form id="resetPassForm">
+                    <div class="auth-input-group">
+                        <label for="newPassword">New Password</label>
+                        <input
+                            type="password"
+                            id="newPassword"
+                            placeholder="Enter new password (min 4 chars)"
+                            required
+                        >
+                    </div>
+
+                    <div class="auth-input-group">
+                        <label for="confirmNewPassword">Confirm New Password</label>
+                        <input
+                            type="password"
+                            id="confirmNewPassword"
+                            placeholder="Re-type new password"
+                            required
+                        >
+                    </div>
+
+                    <button type="submit" class="auth-submit-btn">
+                        <span>Save Password &amp; Sign In</span>
+                        <span>&rarr;</span>
+                    </button>
+
+                    <p id="resetMsg" style="color: #ef4444; font-size: 13.5px; margin-top: 12px; text-align: center;"></p>
+                </form>
+
+                <p class="auth-footer-text">
+                    Remembered your old password?
+                    <a href="/" class="auth-link">Return to Login</a>
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <div id="toastContainer"></div>
+    <script src="{{ url_for('static', filename='javascript.js') }}"></script>
+</body>
 </html>

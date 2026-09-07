@@ -1,30 +1,70 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initital-scale=1.0">
-        <title>ClothingStore</title>
-        <link rel="icon" type="image/png" href="{{ url_for('static', filename='logo.png') }}">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recover Account &bull; CLOTH STORE</title>
+    <link rel="icon" type="image/png" href="{{ url_for('static', filename='logo.png') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
 
-        <link rel="stylesheet"
-          href="{{ url_for('static', filename='style.css') }}">
-    </head>
-    <body>
-        <div class="input-group">
-            <p>Recover Your Account</p>
-            <label for="email">Mail ID or Phone number</label>
-            <input 
-             type="mail"
-            id="mail"
-            placeholder="Enter Here"
-            required>
-            <button 
-                type="button"
-                id="togglepassword">
-                <a href="verification.html">Send Code</a>
-                
-            
-            </button>
-            <script src="{{ url_for('static', filename='javascript.js') }}"></script>
-    </body>
+    <div class="auth-split-layout">
+        <!-- LEFT EDITORIAL HERO -->
+        <div class="auth-hero-pane">
+            <div class="auth-brand-badge">
+                <div class="auth-brand-logo">CS</div>
+                <div class="auth-brand-title">CLOTH STORE</div>
+            </div>
+
+            <div class="auth-quote-box">
+                <blockquote>
+                    &ldquo;Security and seamless experience are our top priorities.&rdquo;
+                </blockquote>
+                <div class="auth-quote-author">&mdash; Cloth Store Concierge</div>
+            </div>
+
+            <div class="auth-hero-footer">
+                Step 1 of 3 &bull; Account Verification
+            </div>
+        </div>
+
+        <!-- RIGHT RECOVER FORM -->
+        <div class="auth-form-pane">
+            <div class="auth-card-inner">
+                <div class="auth-header">
+                    <h2>Reset Password</h2>
+                    <p>Enter your registered customer email to receive a 6-digit recovery code</p>
+                </div>
+
+                <form id="forgotPassForm">
+                    <div class="auth-input-group">
+                        <label for="recoverEmail">Registered Email Address</label>
+                        <input
+                            type="email"
+                            id="recoverEmail"
+                            placeholder="name@example.com"
+                            required
+                        >
+                    </div>
+
+                    <button type="submit" class="auth-submit-btn">
+                        <span>Send Verification Code</span>
+                        <span>&rarr;</span>
+                    </button>
+
+                    <p id="recoverMsg" style="color: #ef4444; font-size: 13.5px; margin-top: 12px; text-align: center;"></p>
+                </form>
+
+                <p class="auth-footer-text">
+                    Remember your password?
+                    <a href="/" class="auth-link">Return to Login</a>
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <div id="toastContainer"></div>
+    <script src="{{ url_for('static', filename='javascript.js') }}"></script>
+</body>
 </html>

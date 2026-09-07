@@ -1,27 +1,72 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initital-scale=1.0">
-        <title>ClothingStore</title>
-        <link rel="icon" type="image/png" href="{{ url_for('static', filename='logo.png') }}">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verify Code &bull; CLOTH STORE</title>
+    <link rel="icon" type="image/png" href="{{ url_for('static', filename='logo.png') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
 
-        <link rel="stylesheet" href="style.css">
-    </head>
-    <body>
-        <div class="input-group">
-            <p>Recover Your Account</p>
-            <label for="email">Enter the Code</label>
-            <input 
-             type="mail"
-            id="mail"
-            placeholder="Enter Here"
-            required>
-            <button 
-                type="button"
-                id="togglepassword">
-                <a href="confirm.html">Confirm</a>
-            </button>
+    <div class="auth-split-layout">
+        <!-- LEFT EDITORIAL HERO -->
+        <div class="auth-hero-pane">
+            <div class="auth-brand-badge">
+                <div class="auth-brand-logo">CS</div>
+                <div class="auth-brand-title">CLOTH STORE</div>
+            </div>
 
-    </body>
+            <div class="auth-quote-box">
+                <blockquote>
+                    &ldquo;Protecting your privacy and personal styling profile.&rdquo;
+                </blockquote>
+                <div class="auth-quote-author">&mdash; Cloth Store Security</div>
+            </div>
+
+            <div class="auth-hero-footer">
+                Step 2 of 3 &bull; Code Verification
+            </div>
+        </div>
+
+        <!-- RIGHT OTP FORM -->
+        <div class="auth-form-pane">
+            <div class="auth-card-inner">
+                <div class="auth-header">
+                    <h2>Enter 6-Digit Code</h2>
+                    <p>Enter the verification code sent to <strong id="verifyEmailBadge">your email</strong></p>
+                </div>
+
+                <form id="verifyOtpForm">
+                    <div class="auth-input-group">
+                        <label for="otpCode">6-Digit Verification Code</label>
+                        <input
+                            type="text"
+                            id="otpCode"
+                            placeholder="e.g. 123456"
+                            maxlength="6"
+                            style="letter-spacing: 6px; font-size: 20px; text-align: center;"
+                            required
+                        >
+                    </div>
+
+                    <button type="submit" class="auth-submit-btn">
+                        <span>Verify Code &amp; Continue</span>
+                        <span>&rarr;</span>
+                    </button>
+
+                    <p id="otpMsg" style="color: #ef4444; font-size: 13.5px; margin-top: 12px; text-align: center;"></p>
+                </form>
+
+                <p class="auth-footer-text">
+                    Didn't receive code?
+                    <a href="/forgot-password" class="auth-link">Request another code</a>
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <div id="toastContainer"></div>
+    <script src="{{ url_for('static', filename='javascript.js') }}"></script>
+</body>
 </html>

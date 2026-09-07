@@ -3,134 +3,571 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My Orders - Clothing Store</title>
+    <title>My Orders &bull; CLOTH STORE</title>
     <link rel="icon" type="image/png" href="{{ url_for('static', filename='logo.png') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='home.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <style>
+        .orders-page-wrapper {
+            max-width: 1040px;
+            margin: 0 auto;
+            padding: 40px 24px 80px;
+        }
+
+        .orders-header-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 24px;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+
+        .orders-header-row h1 {
+            font-family: var(--font-serif);
+            font-size: 32px;
+            color: #0f172a;
+            margin: 0 0 4px;
+        }
+
+        .orders-header-row p {
+            color: #64748b;
+            margin: 0;
+            font-size: 14.5px;
+        }
+
+        .orders-filter-row {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+
+        .order-pill-filter {
+            background: #ffffff;
+            border: 1px solid #cbd5e1;
+            padding: 8px 18px;
+            border-radius: var(--radius-full);
+            font-size: 13.5px;
+            font-weight: 700;
+            color: #475569;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .order-pill-filter.active {
+            background: #0f172a;
+            color: #ffffff;
+            border-color: #0f172a;
+        }
+
+        .order-card-container {
+            display: flex;
+            flex-direction: column;
+            gap: 22px;
+        }
+
+        .order-box {
+            background: #ffffff;
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--color-border);
+            box-shadow: var(--shadow-soft);
+            overflow: hidden;
+            transition: transform 0.2s;
+        }
+
+        .order-box:hover {
+            box-shadow: var(--shadow-elevated);
+        }
+
+        .order-box-header {
+            background: #f8fafc;
+            padding: 16px 24px;
+            border-bottom: 1px solid var(--color-border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .order-meta-info {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            font-size: 13.5px;
+        }
+
+        .order-meta-info strong {
+            color: #0f172a;
+        }
+
+        .order-meta-date {
+            color: #64748b;
+        }
+
+        .order-status-badge {
+            padding: 5px 14px;
+            border-radius: var(--radius-full);
+            font-size: 12px;
+            font-weight: 800;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+
+        .status-badge-pending { background: #fef3c7; color: #b45309; }
+        .status-badge-shipped { background: #dbeafe; color: #1d4ed8; }
+        .status-badge-delivered { background: #d1fae5; color: #047857; }
+        .status-badge-cancelled { background: #fee2e2; color: #b91c1c; }
+
+        /* TRACKER TIMELINE */
+        .order-tracker-timeline {
+            padding: 24px 30px 14px;
+            background: #ffffff;
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+        .timeline-steps-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: relative;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .timeline-track-bar {
+            position: absolute;
+            top: 14px;
+            left: 20px;
+            right: 20px;
+            height: 3px;
+            background: #e2e8f0;
+            z-index: 1;
+        }
+
+        .timeline-track-fill {
+            height: 100%;
+            background: #10b981;
+            transition: width 0.4s ease;
+        }
+
+        .t-step {
+            position: relative;
+            z-index: 2;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .t-dot {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background: #ffffff;
+            border: 3px solid #cbd5e1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: 800;
+            color: #64748b;
+        }
+
+        .t-step.completed .t-dot {
+            background: #10b981;
+            border-color: #10b981;
+            color: #ffffff;
+        }
+
+        .t-step.current .t-dot {
+            border-color: #3b82f6;
+            color: #3b82f6;
+        }
+
+        .t-label {
+            font-size: 12px;
+            font-weight: 700;
+            color: #64748b;
+        }
+
+        .t-step.completed .t-label,
+        .t-step.current .t-label {
+            color: #0f172a;
+        }
+
+        /* ORDER CONTENT */
+        .order-content-body {
+            padding: 24px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+            align-items: center;
+        }
+
+        .order-item-left {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .order-product-thumb {
+            width: 74px;
+            height: 90px;
+            border-radius: var(--radius-sm);
+            object-fit: cover;
+            background: #f1f5f9;
+        }
+
+        .order-address-box {
+            font-size: 13px;
+            color: #475569;
+            line-height: 1.5;
+            background: #f8fafc;
+            padding: 14px 18px;
+            border-radius: var(--radius-md);
+            border: 1px solid var(--color-border);
+        }
+
+        .order-box-footer {
+            padding: 14px 24px;
+            background: #f8fafc;
+            border-top: 1px solid var(--color-border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .cancel-order-btn {
+            background: #ef4444;
+            color: #ffffff;
+            border: none;
+            padding: 8px 18px;
+            border-radius: var(--radius-sm);
+            font-size: 13px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .cancel-order-btn:hover {
+            background: #dc2626;
+        }
+
+        .print-invoice-btn {
+            background: #ffffff;
+            border: 1px solid #cbd5e1;
+            color: #0f172a;
+            padding: 8px 16px;
+            border-radius: var(--radius-sm);
+            font-size: 13px;
+            font-weight: 700;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .print-invoice-btn:hover {
+            background: #f1f5f9;
+        }
+
+        .success-banner {
+            background: #d1fae5;
+            border: 1px solid #10b981;
+            color: #065f46;
+            padding: 16px 20px;
+            border-radius: var(--radius-md);
+            margin-bottom: 24px;
+            font-size: 14.5px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        @media (max-width: 768px) {
+            .order-content-body {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
 </head>
-<body>
+<body data-user-id="{{ current_user_id }}">
+
+    <!-- NAVBAR -->
     <nav class="navbar">
-        <div class="logo">CLOTH STORE</div>
+        <a class="nav-brand-group" href="/home">
+            <div class="brand-icon-box">CS</div>
+            <div class="brand-text-box">
+                <span class="brand-title">CLOTH STORE</span>
+                <span class="brand-tagline">ORDER TRACKER</span>
+            </div>
+        </a>
+
         <div class="nav-links">
-            <a href="/home">Home</a>
-            <a href="/home">Shop</a>
-            <a href="/payment">Checkout</a>
-            <a href="/my-orders" class="active-link">My Orders</a>
-            <a href="/logout" class="logout-link">Logout</a>
+            <a class="nav-item-link" href="/home">Shop Collection</a>
+            <a class="nav-item-link active" href="/my-orders">My Orders</a>
+            <a href="/logout" class="logout-nav-btn">Logout</a>
         </div>
     </nav>
 
-    <section class="orders-section">
-        <div class="section-header">
-            <h2>My Orders</h2>
-            <p>Your order history</p>
+    <main class="orders-page-wrapper">
+        <div id="successBanner" class="success-banner" style="display: none;">
+            <span style="font-size: 20px;">🎉</span>
+            <span>Thank you! Your payment has been received and your order is in progress.</span>
         </div>
 
-        <div id="successMessage" class="success-banner" style="display: none;"></div>
+        <div class="orders-header-row">
+            <div>
+                <h1>My Orders &amp; Track Deliveries</h1>
+                <p>Track real-time shipment status, review purchase history, and access receipts.</p>
+            </div>
+            <a href="/home" class="hero-btn-primary" style="text-decoration: none; padding: 10px 22px; font-size: 14px;">
+                Continue Shopping &rarr;
+            </a>
+        </div>
 
-        <div id="ordersContainer"></div>
+        <!-- FILTER PILLS -->
+        <div class="orders-filter-row">
+            <button type="button" class="order-pill-filter active" onclick="filterOrders('all', this)">All Orders</button>
+            <button type="button" class="order-pill-filter" onclick="filterOrders('Pending', this)">Pending</button>
+            <button type="button" class="order-pill-filter" onclick="filterOrders('Shipped', this)">Shipped</button>
+            <button type="button" class="order-pill-filter" onclick="filterOrders('Delivered', this)">Delivered</button>
+            <button type="button" class="order-pill-filter" onclick="filterOrders('Cancelled', this)">Cancelled</button>
+        </div>
 
-        <div id="loadingMsg" class="empty-cart">Loading your orders...</div>
-    </section>
+        <!-- ORDERS LIST -->
+        <div id="ordersContainer" class="order-card-container">
+            <!-- Dynamic order boxes rendered by JS -->
+        </div>
+
+        <div id="loadingMsg" style="text-align: center; padding: 50px 20px; color: #64748b;">
+            Loading your order records...
+        </div>
+    </main>
+
+    <div id="toastContainer"></div>
 
     <script>
-    const ordersContainer = document.getElementById("ordersContainer");
-    const loadingMsg = document.getElementById("loadingMsg");
-    const successMessage = document.getElementById("successMessage");
+    let allUserOrders = [];
+    let currentFilter = 'all';
 
-    // Show success message from payment redirect
     const params = new URLSearchParams(window.location.search);
     if (params.get("success") === "1") {
-        successMessage.textContent = "Payment completed! Your order has been placed successfully.";
-        successMessage.style.display = "block";
+        document.getElementById("successBanner").style.display = "flex";
     }
 
-    function formatDate(dateString) {
-        if (!dateString) return "";
-        const d = new Date(dateString);
-        return d.toLocaleString();
+    function showToast(message, type = 'success') {
+        const container = document.getElementById("toastContainer");
+        const toast = document.createElement("div");
+        toast.className = `toast-item ${type}`;
+        toast.innerHTML = `<span>✓</span><span>${message}</span>`;
+        container.appendChild(toast);
+        setTimeout(() => toast.remove(), 3200);
     }
 
-    function statusClass(status) {
-        return status ? status.toLowerCase() : "pending";
+    function formatDate(dateStr) {
+        if (!dateStr) return "";
+        const d = new Date(dateStr);
+        return d.toLocaleDateString('en-US', {
+            month: 'short',
+            day: 'numeric',
+            year: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit'
+        });
     }
 
     function loadOrders() {
+        const container = document.getElementById("ordersContainer");
+        const loading = document.getElementById("loadingMsg");
+
         fetch("/api/my-orders")
-            .then(function (resp) { return resp.json(); })
-            .then(function (data) {
-                loadingMsg.style.display = "none";
-
+            .then(res => res.json())
+            .then(data => {
+                loading.style.display = "none";
                 if (!data.success) {
-                    ordersContainer.innerHTML = '<div class="empty-cart">' + data.message + '</div>';
+                    container.innerHTML = `<div class="empty-catalog"><h3>${data.message}</h3></div>`;
                     return;
                 }
-
-                if (data.orders.length === 0) {
-                    ordersContainer.innerHTML = '<div class="empty-cart">You have no orders yet.</div>';
-                    return;
-                }
-
-                let html = "";
-                data.orders.forEach(function (order) {
-                    const lineTotal = (order.price * order.quantity).toFixed(2);
-                    const canCancel = order.order_status === "Pending";
-                    html += `
-                        <div class="order-card">
-                            <div class="order-card-header">
-                                <div>
-                                    <strong>Order #${order.id}</strong>
-                                    <span class="order-date">${formatDate(order.order_date)}</span>
-                                </div>
-                                <span class="order-status status-${statusClass(order.order_status)}">${order.order_status}</span>
-                            </div>
-                            <div class="order-detail">
-                                <h4>${order.product_name}</h4>
-                                <p>${order.gender ? order.gender : ""} ${order.category ? "/ " + order.category : ""}</p>
-                                <p>₹${order.price} x ${order.quantity} = <strong>₹${lineTotal}</strong></p>
-                            </div>
-                            <div class="order-address">
-                                <p><strong>Deliver to:</strong> ${order.customer_name}</p>
-                                <p>${order.address}, ${order.pincode} - ${order.phone}</p>
-                            </div>
-                            <div class="order-card-footer">
-                                <span class="payment-label">Payment: ${order.payment_status}</span>
-                                ${canCancel
-                                    ? '<button class="cancel-btn" onclick="cancelOrder(' + order.id + ')">Cancel Order</button>'
-                                    : '<span class="cancel-disabled">Cannot cancel (' + order.order_status + ')</span>'}
-                            </div>
-                        </div>
-                    `;
-                });
-                ordersContainer.innerHTML = html;
+                allUserOrders = data.orders || [];
+                renderOrders();
             })
-            .catch(function (err) {
+            .catch(err => {
                 console.error(err);
-                loadingMsg.style.display = "none";
-                ordersContainer.innerHTML = '<div class="empty-cart">Unable to load orders.</div>';
+                loading.style.display = "none";
+                container.innerHTML = `<div class="empty-catalog"><h3>Unable to retrieve orders.</h3></div>`;
             });
     }
 
-    function cancelOrder(orderId) {
-        if (!confirm("Are you sure you want to cancel this order?")) return;
+    function filterOrders(status, element) {
+        currentFilter = status;
+        document.querySelectorAll(".order-pill-filter").forEach(b => b.classList.remove("active"));
+        if (element) element.classList.add("active");
+        renderOrders();
+    }
 
-        fetch("/orders/cancel/" + orderId, {
+    function renderOrders() {
+        const container = document.getElementById("ordersContainer");
+        container.innerHTML = "";
+
+        const filtered = allUserOrders.filter(o => {
+            if (currentFilter === 'all') return true;
+            return o.order_status === currentFilter;
+        });
+
+        if (filtered.length === 0) {
+            container.innerHTML = `
+                <div class="empty-catalog" style="padding: 50px 20px;">
+                    <div style="font-size: 40px; margin-bottom: 10px;">📦</div>
+                    <h3>No Orders Found</h3>
+                    <p>You have no orders matching "${currentFilter}".</p>
+                    <a href="/home" class="hero-btn-primary" style="display:inline-block; text-decoration:none;">Shop Now</a>
+                </div>
+            `;
+            return;
+        }
+
+        filtered.forEach(order => {
+            const lineTotal = (order.price * order.quantity).toFixed(2);
+            const canCancel = order.order_status === "Pending";
+            const statusLower = (order.order_status || "pending").toLowerCase();
+
+            // Timeline calculations
+            let fillWidth = "10%";
+            let step1Class = "completed";
+            let step2Class = "";
+            let step3Class = "";
+            let step4Class = "";
+
+            if (order.order_status === "Pending") {
+                fillWidth = "25%";
+                step2Class = "current";
+            } else if (order.order_status === "Shipped") {
+                fillWidth = "66%";
+                step2Class = "completed";
+                step3Class = "current";
+            } else if (order.order_status === "Delivered") {
+                fillWidth = "100%";
+                step2Class = "completed";
+                step3Class = "completed";
+                step4Class = "completed";
+            } else if (order.order_status === "Cancelled") {
+                fillWidth = "0%";
+                step1Class = "";
+            }
+
+            const isUrl = order.image && (order.image.startsWith("http") || order.image.startsWith("/"));
+            const thumbHtml = isUrl
+                ? `<img class="order-product-thumb" src="${order.image}" alt="${order.product_name}">`
+                : `<div class="order-product-thumb" style="display:flex;align-items:center;justify-content:center;font-size:32px;">${order.image || '👕'}</div>`;
+
+            const card = document.createElement("div");
+            card.className = "order-box";
+            card.innerHTML = `
+                <div class="order-box-header">
+                    <div class="order-meta-info">
+                        <span>Order <strong>#CS-${order.id}</strong></span>
+                        <span class="order-meta-date">${formatDate(order.order_date)}</span>
+                    </div>
+                    <span class="order-status-badge status-badge-${statusLower}">${order.order_status}</span>
+                </div>
+
+                <!-- TIMELINE STEPPER -->
+                ${order.order_status !== 'Cancelled' ? `
+                <div class="order-tracker-timeline">
+                    <div class="timeline-steps-row">
+                        <div class="timeline-track-bar">
+                            <div class="timeline-track-fill" style="width: ${fillWidth};"></div>
+                        </div>
+                        <div class="t-step ${step1Class}">
+                            <div class="t-dot">1</div>
+                            <div class="t-label">Confirmed</div>
+                        </div>
+                        <div class="t-step ${step2Class}">
+                            <div class="t-dot">2</div>
+                            <div class="t-label">Packaging</div>
+                        </div>
+                        <div class="t-step ${step3Class}">
+                            <div class="t-dot">3</div>
+                            <div class="t-label">Dispatched</div>
+                        </div>
+                        <div class="t-step ${step4Class}">
+                            <div class="t-dot">4</div>
+                            <div class="t-label">Delivered</div>
+                        </div>
+                    </div>
+                </div>` : ''}
+
+                <div class="order-content-body">
+                    <div class="order-item-left">
+                        ${thumbHtml}
+                        <div>
+                            <h3 style="margin: 0 0 4px; font-size: 16px; color: #0f172a;">${order.product_name}</h3>
+                            <div style="font-size: 12.5px; color: #64748b; margin-bottom: 6px;">
+                                ${order.gender || ''} &bull; ${order.category || ''}
+                            </div>
+                            <div style="font-size: 14.5px; font-weight: 800; color: #0f172a;">
+                                ₹${order.price} &times; ${order.quantity} = ₹${lineTotal}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="order-address-box">
+                        <div style="font-weight: 700; color: #0f172a; margin-bottom: 4px;">Recipient &amp; Delivery Destination:</div>
+                        <div><strong>${order.customer_name}</strong> (${order.phone})</div>
+                        <div>${order.address}, ${order.pincode}</div>
+                        <div style="margin-top: 6px; font-size: 12px; color: #6366f1; font-weight: 700;">
+                            Payment Status: ${order.payment_status}
+                        </div>
+                    </div>
+                </div>
+
+                <div class="order-box-footer">
+                    <button type="button" class="print-invoice-btn" onclick="window.print()">
+                        📄 Print Receipt / Tax Invoice
+                    </button>
+                    ${canCancel ? `
+                        <button type="button" class="cancel-order-btn" onclick="cancelOrder(${order.id})">
+                            Cancel Order
+                        </button>
+                    ` : `
+                        <span style="font-size: 12.5px; color: #94a3b8; font-weight: 600;">
+                            ${order.order_status === 'Cancelled' ? 'Order Cancelled' : 'In fulfillment stage (No longer cancellable)'}
+                        </span>
+                    `}
+                </div>
+            `;
+            container.appendChild(card);
+        });
+    }
+
+    function cancelOrder(orderId) {
+        if (!confirm(`Are you sure you wish to cancel order #CS-${orderId}? Items will be restocked.`)) {
+            return;
+        }
+
+        fetch(`/orders/cancel/${orderId}`, {
             method: "POST",
             headers: { "Content-Type": "application/json" }
         })
-            .then(function (resp) { return resp.json(); })
-            .then(function (data) {
-                if (data.success) {
-                    successMessage.textContent = data.message;
-                    successMessage.style.display = "block";
-                    loadOrders();
-                } else {
-                    alert(data.message);
-                }
-            })
-            .catch(function (err) {
-                console.error(err);
-                alert("Unable to cancel order.");
-            });
+        .then(res => res.json())
+        .then(result => {
+            if (result.success) {
+                showToast(result.message, "success");
+                loadOrders();
+            } else {
+                alert(result.message);
+            }
+        })
+        .catch(err => {
+            console.error(err);
+            alert("Error cancelling order.");
+        });
     }
 
     loadOrders();

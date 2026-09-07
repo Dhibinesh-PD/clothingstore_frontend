@@ -3,82 +3,105 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <title>Clothing Store - Login</title>
+    <title>Customer Sign In &bull; CLOTH STORE</title>
     <link rel="icon" type="image/png" href="{{ url_for('static', filename='logo.png') }}">
-
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
-
 <body>
 
-    <div class="login-container">
+    <div class="auth-split-layout">
+        <!-- LEFT EDITORIAL HERO -->
+        <div class="auth-hero-pane">
+            <div class="auth-brand-badge">
+                <div class="auth-brand-logo">CS</div>
+                <div class="auth-brand-title">CLOTH STORE</div>
+            </div>
 
-        <div class="login-box">
+            <div class="auth-quote-box">
+                <blockquote>
+                    &ldquo;Fashion is about dreaming and making other people dream.&rdquo;
+                </blockquote>
+                <div class="auth-quote-author">&mdash; Donatella Versace</div>
+            </div>
 
-            <h1>Clothing Store</h1>
-            <p class="welcome">Welcome back to Store!</p>
-
-            <form id="loginForm">
-
-                <div class="input-group">
-                    <label for="email">Mail Id</label>
-                    <input
-                        type="email"
-                        id="email"
-                        placeholder="Enter your email"
-                        required
-                    >
-                </div>
-
-                <div class="input-group">
-                    <label for="password">Password</label>
-
-                    <div class="password-box">
-                        <input
-                            type="password"
-                            id="password"
-                            placeholder="Enter your password"
-                            required
-                        >
-
-                        <button
-                            type="button"
-                            id="togglePassword">Show
-                        </button>
-                    </div>
-                </div>
-
-                <div class="login-options">
-
-                    <label>
-                        <input type="checkbox" id="remember">
-                        Remember me
-                    </label>
-
-                    <a href="Forgetpass.html">Forgot Password?</a>
-
-                </div>
-
-                <button type="submit" class="login-btn">
-                    login
-                </button>
-                <a href="/admin/login" class="adminlogin">Admin Login</a>
-
-                <p id="message"></p>
-
-            </form>
-
-            <p class="register-text">
-                Don't have an account?
-                <a href="create.html">Create Account</a>
-            </p>
-
+            <div class="auth-hero-footer">
+                &copy; 2026 CLOTH STORE &bull; Haute Couture &amp; Ready-to-Wear
+            </div>
         </div>
 
+        <!-- RIGHT LOGIN FORM -->
+        <div class="auth-form-pane">
+            <div class="auth-card-inner">
+                <div class="auth-header">
+                    <h2>Welcome Back</h2>
+                    <p>Enter your credentials to access your customer wardrobe</p>
+                </div>
+
+                <form id="loginForm">
+                    <div class="auth-input-group">
+                        <label for="email">Email Address</label>
+                        <input
+                            type="email"
+                            id="email"
+                            placeholder="name@example.com"
+                            required
+                            autocomplete="email"
+                        >
+                    </div>
+
+                    <div class="auth-input-group">
+                        <label for="password">Account Password</label>
+                        <div class="password-input-wrap">
+                            <input
+                                type="password"
+                                id="password"
+                                placeholder="Enter your password"
+                                required
+                                autocomplete="current-password"
+                            >
+                            <button type="button" class="password-toggle-btn" id="togglePassword">Show</button>
+                        </div>
+                    </div>
+
+                    <div class="auth-options-row">
+                        <label class="remember-label">
+                            <input type="checkbox" id="rememberMe">
+                            Remember my session
+                        </label>
+                        <a href="/forgot-password" class="auth-link">Forgot password?</a>
+                    </div>
+
+                    <button type="submit" class="auth-submit-btn">
+                        <span>Sign In to Store</span>
+                        <span>&rarr;</span>
+                    </button>
+
+                    <p id="message" style="color: #ef4444; font-size: 13.5px; margin-top: 12px; text-align: center;"></p>
+                </form>
+
+                <div class="demo-box">
+                    <div class="demo-box-text">
+                        <strong>Quick Testing:</strong><br>
+                        Auto-fill sample customer account
+                    </div>
+                    <button type="button" class="demo-fill-btn" onclick="fillDemoUser()">Demo Login</button>
+                </div>
+
+                <p class="auth-footer-text">
+                    New to Cloth Store?
+                    <a href="/create.html" class="auth-link">Create an account</a>
+                </p>
+
+                <div style="text-align: center; margin-top: 24px; padding-top: 18px; border-top: 1px solid #f1f5f9;">
+                    <a href="/admin/login" style="font-size: 12.5px; color: #64748b; text-decoration: none;">
+                        Staff / Administrator Portal &rarr;
+                    </a>
+                </div>
+            </div>
+        </div>
     </div>
 
+    <div id="toastContainer"></div>
     <script src="{{ url_for('static', filename='javascript.js') }}"></script>
-
 </body>
 </html>

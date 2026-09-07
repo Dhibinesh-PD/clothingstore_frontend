@@ -3,59 +3,304 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Clothing Store - Home</title>
+    <title>CLOTH STORE — Luxury & Contemporary Fashion</title>
+    <meta name="description" content="Discover premium menswear, womenswear, formal shirts, dresses, denim, and signature style collections at Cloth Store.">
     <link rel="icon" type="image/png" href="{{ url_for('static', filename='logo.png') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='home.css') }}">
 </head>
 <body data-user-id="{{ current_user_id }}">
-    <nav class="navbar">
-        <div class="logo">CLOTH STORE</div>
+
+    <!-- NAVBAR -->
+    <nav class="navbar" id="mainNavbar">
+        <a class="nav-brand-group" href="/home" onclick="showAllProducts(); return false;">
+            <div class="brand-icon-box">CS</div>
+            <div class="brand-text-box">
+                <span class="brand-title">CLOTH STORE</span>
+                <span class="brand-tagline">HAUTE COUTURE</span>
+            </div>
+        </a>
+
+        <!-- REAL-TIME LIVE SEARCH -->
+        <div class="nav-search-wrapper">
+            <span class="search-icon-left">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+            </span>
+            <input type="text" id="catalogSearchInput" class="nav-search-input" placeholder="Search shirts, dresses, jeans, styles..." oninput="handleSearchInput(this.value)">
+            <button type="button" id="searchClearBtn" class="search-clear-btn" onclick="clearSearch()">&times;</button>
+        </div>
+
         <div class="nav-links">
-            <a href="#" onclick="showAllProducts()">Home</a>
-            <a href="#" onclick="showGender('Men')">Men</a>
-            <a href="#" onclick="showGender('Women')">Women</a>
-            <a href="#" onclick="showCategory('T-Shirt')">T-Shirts</a>
-            <a href="#" onclick="showCategory('Shirt')">Shirts</a>
-            <a href="#" onclick="showCategory('Jeans')">Jeans</a>
-            <a href="#" onclick="showCategory('Dress')">Dresses</a>
-            <a href="#" onclick="showCart()">
-                Cart
+            <a class="nav-item-link active" id="navAllLink" onclick="showAllProducts()">Collection</a>
+            <a class="nav-item-link" id="navMenLink" onclick="showGender('Men')">Men</a>
+            <a class="nav-item-link" id="navWomenLink" onclick="showGender('Women')">Women</a>
+            <a class="nav-item-link" href="/my-orders">My Orders</a>
+
+            <!-- CART TRIGGER -->
+            <button type="button" class="cart-btn-trigger" onclick="openCartDrawer()" title="View Cart">
+                <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg>
+                <span>Bag</span>
                 <span id="cartCount">0</span>
-            </a>
-            <a href="/my-orders">My Orders</a>
-            <a href="/logout" class="logout-link">Logout</a>
+            </button>
+
+            <!-- USER BADGE -->
+            <div class="user-profile-badge" title="Logged in as {{ user_name }}">
+                <div class="user-avatar-initials">{{ user_name[0] if user_name else 'C' }}</div>
+                <span class="user-display-name">{{ user_name }}</span>
+            </div>
+
+            <a href="/logout" class="logout-nav-btn" title="Sign out">Logout</a>
         </div>
     </nav>
 
+    <!-- HERO SECTION -->
     <section class="hero">
         <div class="hero-content">
-            <p>NEW COLLECTION</p>
-            <h1>Find Your<br>Perfect Style</h1>
-            <button onclick="showAllProducts()">Shop Now</button>
+            <div class="hero-badge">
+                <span>✦</span> AUTUMN / WINTER 2026 EDITION
+            </div>
+            <h1>Crafted Elegance.<br><span>Timeless Modern Style.</span></h1>
+            <p class="hero-subtitle">
+                Explore handpicked tailored silhouettes, Italian-inspired linen, structured cotton, and luxury evening wear engineered for modern living.
+            </p>
+            <div class="hero-actions">
+                <button type="button" class="hero-btn-primary" onclick="showGender('Men')">Shop Men's Collection</button>
+                <button type="button" class="hero-btn-secondary" onclick="showGender('Women')">Shop Women's Edition</button>
+            </div>
+        </div>
+
+        <div class="hero-visual-card">
+            <img class="hero-preview-img" src="https://images.unsplash.com/photo-1521572267360-ee0c2909d518?auto=format&fit=crop&w=600&q=80" alt="Men's fashion preview">
+            <img class="hero-preview-img" src="https://images.unsplash.com/photo-1566174053879-31528523f8ae?auto=format&fit=crop&w=600&q=80" alt="Women's evening dress preview">
         </div>
     </section>
 
+    <!-- VALUE PROPOSITIONS -->
+    <section class="value-props-bar">
+        <div class="prop-item">
+            <div class="prop-icon">🚚</div>
+            <div class="prop-text">
+                <h4>Free Express Shipping</h4>
+                <p>On all domestic orders over ₹999</p>
+            </div>
+        </div>
+        <div class="prop-item">
+            <div class="prop-icon">✨</div>
+            <div class="prop-text">
+                <h4>100% Authentic Luxury</h4>
+                <p>Curated fabrics & verified craftsmanship</p>
+            </div>
+        </div>
+        <div class="prop-item">
+            <div class="prop-icon">🔄</div>
+            <div class="prop-text">
+                <h4>7-Day Easy Returns</h4>
+                <p>Hassle-free refunds & exchanges</p>
+            </div>
+        </div>
+        <div class="prop-item">
+            <div class="prop-icon">🛡️</div>
+            <div class="prop-text">
+                <h4>Secure Checkout</h4>
+                <p>Encrypted UPI, Cards, & Net Banking</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- CATALOG CONTROLS & FILTER PILLS -->
+    <section class="catalog-controls">
+        <div class="catalog-header-row">
+            <div class="catalog-title-box">
+                <h2 id="productTitle">All Apparel & Collections</h2>
+                <p id="productDescription">Showing curated garments ready for doorstep dispatch</p>
+            </div>
+            <div class="sort-and-count">
+                <span id="catalogCountDisplay" class="product-count-badge">16 items</span>
+                <select id="sortSelect" class="sort-select" onchange="handleSortChange(this.value)">
+                    <option value="default">Featured / Default</option>
+                    <option value="price_asc">Price: Low to High</option>
+                    <option value="price_desc">Price: High to Low</option>
+                    <option value="name_asc">Alphabetical (A - Z)</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- CATEGORY & GENDER FILTER PILLS -->
+        <div class="filter-pills-row">
+            <button type="button" class="filter-pill active" id="pillAll" onclick="filterByPreset('all')">All Items</button>
+            <button type="button" class="filter-pill" id="pillMen" onclick="filterByPreset('Men')">Men's Wardrobe</button>
+            <button type="button" class="filter-pill" id="pillWomen" onclick="filterByPreset('Women')">Women's Collection</button>
+            <button type="button" class="filter-pill" id="pillTShirt" onclick="filterByCategory('T-Shirt')">T-Shirts</button>
+            <button type="button" class="filter-pill" id="pillShirt" onclick="filterByCategory('Shirt')">Formal Shirts</button>
+            <button type="button" class="filter-pill" id="pillJeans" onclick="filterByCategory('Jeans')">Denim Jeans</button>
+            <button type="button" class="filter-pill" id="pillDress" onclick="filterByCategory('Dress')">Evening Dresses</button>
+        </div>
+    </section>
+
+    <!-- PRODUCTS GRID SECTION -->
     <section class="products-section">
-        <div class="section-header">
-            <h2 id="productTitle">All Products</h2>
-            <p id="productDescription">Explore our latest collection</p>
+        <div id="productContainer" class="product-grid">
+            <!-- Dynamic product cards rendered by JS -->
         </div>
-        <div id="productContainer" class="product-grid"></div>
     </section>
 
-    <section id="cartSection" class="cart-section" style="display: none;">
-        <div class="section-header">
-            <h2>Your Shopping Cart</h2>
-            <p>Your selected products</p>
-        </div>
-        <div id="cartContainer"></div>
-        <div id="cartTotal" class="cart-total"></div>
-    </section>
+    <!-- SLIDE-OVER CART DRAWER -->
+    <div id="cartDrawerOverlay" class="cart-drawer-overlay" onclick="handleDrawerBackdropClick(event)">
+        <aside class="cart-drawer">
+            <div class="cart-drawer-header">
+                <h3>
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg>
+                    Your Shopping Bag
+                </h3>
+                <button type="button" class="close-drawer-btn" onclick="closeCartDrawer()" title="Close bag">&times;</button>
+            </div>
 
+            <!-- FREE SHIPPING TRACKER -->
+            <div class="free-shipping-tracker">
+                <div id="shippingTrackerText" class="shipping-progress-text">Add ₹999 for FREE delivery</div>
+                <div class="progress-bar-bg">
+                    <div id="shippingProgressBar" class="progress-bar-fill" style="width: 0%;"></div>
+                </div>
+            </div>
+
+            <!-- CART ITEMS LIST -->
+            <div id="cartItemsContainer" class="cart-items-container">
+                <!-- Cart items injected by JS -->
+            </div>
+
+            <!-- CART DRAWER FOOTER -->
+            <div class="cart-drawer-footer">
+                <div class="promo-code-box">
+                    <input type="text" id="promoInput" class="promo-input" placeholder="Promo code (e.g. LUXE10)">
+                    <button type="button" class="promo-btn" onclick="applyPromoCode()">Apply</button>
+                </div>
+
+                <div class="cart-summary-line">
+                    <span>Subtotal</span>
+                    <span id="drawerSubtotal">₹0.00</span>
+                </div>
+                <div class="cart-summary-line" id="drawerDiscountRow" style="display: none; color: #10b981;">
+                    <span>Discount (<span id="discountPercentText">10%</span>)</span>
+                    <span id="drawerDiscount">-₹0.00</span>
+                </div>
+                <div class="cart-summary-line">
+                    <span>Standard Shipping</span>
+                    <span id="drawerShipping">FREE</span>
+                </div>
+                <div class="cart-summary-line total">
+                    <span>Estimated Total</span>
+                    <span id="drawerTotal">₹0.00</span>
+                </div>
+
+                <button type="button" class="checkout-action-btn" onclick="proceedToCheckout()">
+                    Proceed to Secure Checkout &rarr;
+                </button>
+            </div>
+        </aside>
+    </div>
+
+    <!-- QUICK VIEW MODAL -->
+    <div id="quickViewModal" class="modal-overlay" style="display: none;" onclick="handleModalBackdropClick(event)">
+        <div class="quickview-modal-card">
+            <button type="button" class="modal-close-icon" onclick="closeQuickView()">&times;</button>
+            <div class="quickview-img-box">
+                <img id="qvImage" src="" alt="Product view">
+            </div>
+            <div class="quickview-details-box">
+                <div class="category-meta-row">
+                    <span id="qvCategory" class="category-label">Category</span>
+                    <span id="qvRating" class="rating-box">★ 4.8</span>
+                </div>
+                <h2 id="qvName">Product Title</h2>
+                <div class="price-row">
+                    <span id="qvPrice" class="current-price">₹0.00</span>
+                    <span id="qvOrigPrice" class="original-price">₹0.00</span>
+                    <span class="discount-percent">30% OFF</span>
+                </div>
+                <p id="qvDesc" class="quickview-desc">
+                    Tailored with high-grade breathable natural fibers, reinforced stitching, and precision finish designed for all-day comfort and timeless appeal.
+                </p>
+
+                <label style="font-size: 13px; font-weight: 700; margin-bottom: 8px; display: block; color: #334155;">Select Size</label>
+                <div class="size-selector-row" id="qvSizes">
+                    <div class="size-pill" onclick="selectQvSize(this, 'S')">S</div>
+                    <div class="size-pill active" onclick="selectQvSize(this, 'M')">M</div>
+                    <div class="size-pill" onclick="selectQvSize(this, 'L')">L</div>
+                    <div class="size-pill" onclick="selectQvSize(this, 'XL')">XL</div>
+                </div>
+
+                <div class="card-actions-row" style="margin-top: 24px;">
+                    <div class="qty-stepper">
+                        <button type="button" class="qty-btn" onclick="changeQvQty(-1)">-</button>
+                        <span id="qvQtyDisplay" class="qty-val-display">1</span>
+                        <button type="button" class="qty-btn" onclick="changeQvQty(1)">+</button>
+                    </div>
+                    <button type="button" id="qvAddBtn" class="add-cart-btn" onclick="addQvToCart()">
+                        Add to Bag &bull; <span id="qvBtnTotal">₹0.00</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- TOAST NOTIFICATION CONTAINER -->
+    <div id="toastContainer"></div>
+
+    <!-- FOOTER -->
     <footer>
-        <h3>CLOTH STORE</h3>
-        <p>Your style, your choice.</p>
-        <p>&copy; 2026 Cloth Store</p>
+        <div class="footer-columns-grid">
+            <div class="footer-brand">
+                <h3>CLOTH STORE</h3>
+                <p>
+                    Premium fashion destination offering modern menswear, luxury womenswear, bespoke denim, and refined occasion garments crafted with conscience.
+                </p>
+                <div class="payment-badges-row">
+                    <span class="payment-badge-pill">UPI</span>
+                    <span class="payment-badge-pill">VISA</span>
+                    <span class="payment-badge-pill">MASTERCARD</span>
+                    <span class="payment-badge-pill">RUPAY</span>
+                    <span class="payment-badge-pill">COD</span>
+                </div>
+            </div>
+
+            <div class="footer-col">
+                <h4>Collections</h4>
+                <ul>
+                    <li><a href="#" onclick="showGender('Men'); return false;">Men's Wardrobe</a></li>
+                    <li><a href="#" onclick="showGender('Women'); return false;">Women's Edition</a></li>
+                    <li><a href="#" onclick="filterByCategory('T-Shirt'); return false;">Premium T-Shirts</a></li>
+                    <li><a href="#" onclick="filterByCategory('Shirt'); return false;">Formal Shirts</a></li>
+                    <li><a href="#" onclick="filterByCategory('Jeans'); return false;">Denim Jeans</a></li>
+                    <li><a href="#" onclick="filterByCategory('Dress'); return false;">Cocktail Dresses</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-col">
+                <h4>Customer Service</h4>
+                <ul>
+                    <li><a href="/my-orders">Track My Order</a></li>
+                    <li><a href="#" onclick="showToast('Returns & Exchanges: 7-day doorstep pickup available.', 'success'); return false;">7-Day Returns Policy</a></li>
+                    <li><a href="#" onclick="showToast('Shipping: Free express shipping on orders over ₹999.', 'success'); return false;">Shipping Information</a></li>
+                    <li><a href="#" onclick="showToast('Contact: support@clothstore.com / 1800-419-CLOTH', 'success'); return false;">Support & FAQs</a></li>
+                    <li><a href="/admin/login">Staff & Admin Login</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-col">
+                <h4>Stay in Style</h4>
+                <p style="color: #94a3b8; font-size: 13.5px; margin-bottom: 12px;">
+                    Subscribe to receive early access to private seasonal sales and new arrivals.
+                </p>
+                <form class="newsletter-form" onsubmit="event.preventDefault(); showToast('Subscribed! Check your inbox for 10% discount code.', 'success'); this.reset();">
+                    <input type="email" class="newsletter-input" placeholder="Your email address" required>
+                    <button type="submit" class="newsletter-btn">Join</button>
+                </form>
+            </div>
+        </div>
+
+        <div class="footer-bottom-row">
+            <div>&copy; 2026 CLOTH STORE INC. All rights reserved. Designed for excellence.</div>
+            <div>Privacy Policy &bull; Terms of Service &bull; Certified Authentic Merchandise</div>
+        </div>
     </footer>
 
     <script src="{{ url_for('static', filename='homejavascript.js') }}"></script>

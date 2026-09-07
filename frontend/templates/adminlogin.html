@@ -3,55 +3,125 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Login - Cloth Store</title>
+    <title>Administrator Sign In &bull; CLOTH STORE</title>
+    <link rel="icon" type="image/png" href="{{ url_for('static', filename='logo.png') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
-<body class="admin-login-page">
-    <div class="admin-login-card">
-        <div class="admin-logo">
-            <h1>Clothing Store - Admin Panel</h1>
+<body class="admin-body">
+
+    <div class="auth-split-layout">
+        <!-- LEFT EDITORIAL HERO -->
+        <div class="auth-hero-pane" style="background: linear-gradient(135deg, rgba(11, 15, 25, 0.95), rgba(30, 27, 75, 0.95)), url('https://images.unsplash.com/photo-1441986300917-64674bd600d8?auto=format&fit=crop&w=1200&q=80'); background-size: cover;">
+            <div class="auth-brand-badge">
+                <div class="auth-brand-logo" style="background: #6366f1; color: #fff;">CS</div>
+                <div class="auth-brand-title">ADMIN SUITE</div>
+            </div>
+
+            <div class="auth-quote-box">
+                <blockquote>
+                    &ldquo;Real-time inventory intelligence, order fulfillment, and revenue analytics.&rdquo;
+                </blockquote>
+                <div class="auth-quote-author">Operations Command Center</div>
+            </div>
+
+            <div class="auth-hero-footer">
+                Cloth Store Enterprise Operations &bull; Secure Administrative Access
+            </div>
         </div>
-        <h3>Admin Login</h3>
 
-        <form id="adminLoginForm">
-            <input id="adminEmail" type="email" placeholder="Admin Email" required>
-            <input id="adminPassword" type="password" placeholder="Password" required>
-            <button type="submit">Login to Dashboard</button>
-        </form>
+        <!-- RIGHT LOGIN FORM -->
+        <div class="auth-form-pane" style="background: #0f172a; color: #f8fafc;">
+            <div class="auth-card-inner">
+                <div class="auth-header">
+                    <h2 style="color: #ffffff;">Staff &amp; Admin Sign In</h2>
+                    <p style="color: #94a3b8;">Enter your privileged credentials to manage store catalog and customer orders</p>
+                </div>
 
-        <p id="adminLoginMessage" class="message"></p>
-        <a href="/">&larr; Customer Login</a>
+                <form id="adminLoginForm">
+                    <div class="auth-input-group">
+                        <label for="adminEmail" style="color: #cbd5e1;">Admin Email</label>
+                        <input
+                            type="email"
+                            id="adminEmail"
+                            placeholder="admin@clothstore.com"
+                            style="background: #1e293b; border-color: rgba(255,255,255,0.1); color: #fff;"
+                            required
+                        >
+                    </div>
+
+                    <div class="auth-input-group">
+                        <label for="adminPassword" style="color: #cbd5e1;">Admin Password</label>
+                        <input
+                            type="password"
+                            id="adminPassword"
+                            placeholder="Enter password"
+                            style="background: #1e293b; border-color: rgba(255,255,255,0.1); color: #fff;"
+                            required
+                        >
+                    </div>
+
+                    <button type="submit" class="auth-submit-btn" style="background: linear-gradient(135deg, #4f46e5 0%, #6366f1 100%); margin-top: 10px;">
+                        <span>Access Admin Dashboard</span>
+                        <span>&rarr;</span>
+                    </button>
+
+                    <p id="adminLoginMessage" style="color: #ef4444; font-size: 13.5px; margin-top: 12px; text-align: center;"></p>
+                </form>
+
+                <div class="demo-box" style="background: #1e293b; border-color: rgba(255,255,255,0.15); color: #cbd5e1;">
+                    <div class="demo-box-text" style="color: #cbd5e1;">
+                        <strong>Default Admin Account:</strong><br>
+                        Email: <code>dhi@gmail.com</code> | Pass: <code>12345</code>
+                    </div>
+                    <button type="button" class="demo-fill-btn" onclick="fillAdminDemo()" style="background: #6366f1;">Auto-Fill</button>
+                </div>
+
+                <p class="auth-footer-text">
+                    <a href="/" class="auth-link" style="color: #94a3b8;">&larr; Return to Customer Storefront</a>
+                </p>
+            </div>
+        </div>
     </div>
 
-<script>
-const adminForm = document.getElementById("adminLoginForm");
-const adminMessage = document.getElementById("adminLoginMessage");
-
-adminForm.addEventListener("submit", async function(event) {
-    event.preventDefault();
-
-    const email = document.getElementById("adminEmail").value;
-    const password = document.getElementById("adminPassword").value;
-
-    try {
-        const response = await fetch("/admin/login", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ email: email, password: password })
-        });
-
-        const result = await response.json();
-
-        if (result.success) {
-            window.location.href = result.redirect;
-        } else {
-            adminMessage.textContent = result.message;
-        }
-    } catch (error) {
-        console.error(error);
-        adminMessage.textContent = "Unable to connect to server.";
+    <script>
+    function fillAdminDemo() {
+        document.getElementById("adminEmail").value = "dhi@gmail.com";
+        document.getElementById("adminPassword").value = "12345";
     }
-});
-</script>
+
+    const adminForm = document.getElementById("adminLoginForm");
+    const adminMessage = document.getElementById("adminLoginMessage");
+
+    adminForm.addEventListener("submit", async function(event) {
+        event.preventDefault();
+
+        const email = document.getElementById("adminEmail").value.trim();
+        const password = document.getElementById("adminPassword").value;
+        const submitBtn = adminForm.querySelector("button[type='submit']");
+
+        if (submitBtn) submitBtn.disabled = true;
+
+        try {
+            const response = await fetch("/admin/login", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ email: email, password: password })
+            });
+
+            const result = await response.json();
+
+            if (result.success) {
+                window.location.href = result.redirect || "/admin/dashboard";
+            } else {
+                adminMessage.textContent = result.message;
+                if (submitBtn) submitBtn.disabled = false;
+            }
+        } catch (error) {
+            console.error(error);
+            adminMessage.textContent = "Unable to connect to server.";
+            if (submitBtn) submitBtn.disabled = false;
+        }
+    });
+    </script>
 </body>
 </html>
